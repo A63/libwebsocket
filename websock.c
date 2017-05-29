@@ -343,8 +343,3 @@ char websock_readcontent(websock_conn* conn, void* buf_, struct websock_head* he
   }
   return 1; // Got whole packet
 }
-
-ssize_t readconn(websock_conn* conn, void* buf, size_t len)
-{
-  return aread(conn, buf, len);
-}
