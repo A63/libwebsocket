@@ -251,8 +251,9 @@ char websock_handshake_client(websock_conn* conn, const char* path, const char* 
   while((r=aread(conn, &buf[len], 2047-len))>0)
   {
     len+=r;
+    buf[len]=0;
+    if(strstr(buf, "\r\n\r\n") || strstr(buf, "\n\n")){break;}
   }
-  buf[len]=0;
 //  write(1, buf, len);
   if(strncmp(buf, "HTTP/1.1 101 ", 13)){printf("%s\n", buf); return 0;}
   if(!strstr(buf, "\n\n") && !strstr(buf, "\r\n\r\n")){return 0;}
