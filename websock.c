@@ -260,7 +260,7 @@ char websock_handshake_client(websock_conn* conn, const char* path, const char* 
   return 1; // Success
 }
 
-void websock_write(websock_conn* conn, void* buf, unsigned int len, unsigned char opcode)
+void websock_write(websock_conn* conn, const void* buf, unsigned int len, unsigned char opcode)
 {
   unsigned char head[2];
   head[0]=0x80|opcode;

@@ -38,7 +38,7 @@ extern websock_conn* websock_new(int fd, char tls, const char* cert, const char*
 // NOTE: The callback decides whether or not to accept the request, and if so with which protocol, return 0/NULL to reject, nonsockcb is an option to not treat the session as a websocket session
 extern char websock_handshake_server(websock_conn* conn, const char*(*cb)(const char* path, const char* host, char* protocol, const char* origin), char(*nonsockcb)(const char* path, const char* host));
 extern char websock_handshake_client(websock_conn* conn, const char* path, const char* host, char* protocol, const char* origin, const char* cookie);
-extern void websock_write(websock_conn* conn, void* buf, unsigned int len, unsigned char opcode);
+extern void websock_write(websock_conn* conn, const void* buf, unsigned int len, unsigned char opcode);
 extern char websock_readhead(websock_conn* conn, struct websock_head* head_info);
 extern char websock_readcontent(websock_conn* conn, void* buf_, struct websock_head* head);
 #endif
