@@ -64,6 +64,11 @@ static unsigned long long websock_be64(unsigned long long in)
 #define aread(conn,buf,len) (conn->tls?gnutls_record_recv(conn->session, buf, len):read(conn->sock, buf, len))
 #define awritestr(conn,buf) awrite(conn,buf,strlen(buf))
 
+#if GNUTLS_VERSION_NUMBER<0x030109
+ssize_t readwrap(void* sock, void* buf, size_t size){return read(*(int*)sock, buf, size);}
+ssize_t writewrap(void* sock, const void* buf, size_t size){return write(*(int*)sock, buf, size);}
+#endif
+
 websock_conn* websock_new(int fd, char tls, const char* cert, const char* key)
 {
   websock_conn* conn=malloc(sizeof(websock_conn));
@@ -92,7 +97,13 @@ websock_conn* websock_new(int fd, char tls, const char* cert, const char* key)
   gnutls_priority_set(conn->session, priority);
   gnutls_credentials_set(conn->session, GNUTLS_CRD_CERTIFICATE, cred);
   gnutls_certificate_server_set_request(conn->session, GNUTLS_CERT_IGNORE); // TODO: Don't ignore for clients?
+#if GNUTLS_VERSION_NUMBER<0x030109
+  gnutls_transport_set_ptr(conn->session, &conn->sock);
+  gnutls_transport_set_pull_function(conn->session, readwrap);
+  gnutls_transport_set_push_function(conn->session, writewrap);
+#else
   gnutls_transport_set_int(conn->session, fd);
+#endif
   int ret;
   do{
     ret=gnutls_handshake(conn->session);
