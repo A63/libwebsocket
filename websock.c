@@ -127,8 +127,9 @@ websock_conn* websock_new(int fd, char tls, const char* cert, const char* key)
 "<h3>Error</h3>Wrong websocket version, protocol, path, or not a websocket request"
 char websock_handshake_server(websock_conn* conn, const char*(*cb)(const char* path, const char* host, char* protocol, const char* origin), char(*nonsockcb)(const char* path, const char* host))
 {
-  unsigned int bufsize=257;
+  unsigned int bufsize=256;
   char* buf=malloc(bufsize);
+  buf[0]=0;
   unsigned int buflen=0;
   int readlen;
   while((readlen=aread(conn, &buf[buflen], bufsize-buflen-1))>0)
@@ -136,7 +137,7 @@ char websock_handshake_server(websock_conn* conn, const char*(*cb)(const char* p
     buflen+=readlen;
     buf[buflen]=0;
     if(strstr(buf, "\n\n") || strstr(buf, "\r\n\r\n")){break;} // Break the loop when we received a full request
-    if(buflen+256>bufsize)
+    if(buflen+256>=bufsize)
     {
       bufsize+=256;
       buf=realloc(buf, bufsize);
