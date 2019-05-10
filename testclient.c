@@ -1,6 +1,6 @@
 /*
     libwebsocket, an implementation of websockets version 13
-    Copyright (C) 2017  alicia@ion.nu
+    Copyright (C) 2017, 2019  alicia@ion.nu
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License version 3
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
   char* host=strstr(argv[1], "://");
   if(host){host=&host[3];}else{host=argv[1];}
   char* path=strchr(host, '/');
-  if(path){path[0]=0; path=&path[1];}else{path="/";}
+  if(path){path[0]=0; host=strdup(host); path[0]='/';}else{path="/";}
   char* port=strchr(host, ':');
   if(port){port[0]=0; port=&port[1];}else{port=(tls?"443":"80");}
   // Connect
